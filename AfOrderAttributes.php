@@ -31,15 +31,24 @@ class AfOrderAttributes extends Plugin
       $view = $controller->View();
       
       $user = $view->getAssign('sUserData');
-      $userID = $user['additional']['user']['userID'];
-      $orders = $this->getOrders($userID);
+      if(!$user){
+        return;
+      }else{
+        $userID = $user['additional']['user']['userID'];
+        $orders = $this->getOrders($userID);
 
-      foreach($orders as $order){
-        $orderAttributes = $this->getOrderAttributes($order['id']);
-        $attributes[] = $orderAttributes['0'];
+        if($orders){
+          foreach($orders as $order){
+            $orderAttributes = $this->getOrderAttributes($order['id']);
+            $attributes[] = $orderAttributes['0'];
+          }
+
+          //dump($attributes);
+          $view->assign('AfOrderAttributes', $attributes);
+        }else{
+          return;
+        }
       }
-
-      $view->assign('AfOrderAttributes', $attributes);
     }
 
     public function getOrderAttributes($orderId){
